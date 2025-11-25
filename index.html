@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Звезда по имени Азкен Камила</title>
+<meta name="description" content="Романтический новогодний сайт, посвящённый Азкен Камиле — фото, любимое, 100 комплиментов и признание в любви." />
+<meta name="keywords" content="Азкен Камила, подарок, Новый год, комплименты, любовь" />
+<style>
+  :root{
+    --glass: rgba(255,255,255,0.06);
+    --accent: #f6c3d9;
+    --accent-2: #c7a5ff;
+    --max-width: 1100px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: Inter, Arial, sans-serif;
+    background: radial-gradient(ellipse at center, rgba(6,8,20,1) 0%, #000 65%);
+    color:#fff;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    overflow-x:hidden;
+    scroll-behavior:smooth;
+  }
+
+  /* stars layer */
+  .stars {
+    position:fixed; inset:0; z-index:0;
+    background-image: url('https://i.imgur.com/6S9k2Qx.png');
+    background-size: 2000px 2000px;
+    opacity:0.55;
+    animation: drift 80s linear infinite;
+    pointer-events:none;
+  }
+  @keyframes drift { from { background-position:0 0 } to { background-position:10000px 10000px } }
+
+  .wrap{ position:relative; z-index:2; max-width:var(--max-width); margin:0 auto; padding:28px; }
+
+  section.block{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:18px;
+    padding:48px 18px;
+  }
+
+  h1{ font-size:clamp(28px,5vw,48px); margin:0; text-align:center; letter-spacing:0.6px; }
+  .subtitle{ font-size:18px; opacity:0.95; max-width:820px; text-align:center; line-height:1.5; }
+
+  .hero-photos{ display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; margin-top:6px }
+  .hero-photos img{
+    width:180px; max-width:28vw; border-radius:16px; object-fit:cover;
+    box-shadow:0 12px 40px rgba(0,0,0,0.6), 0 0 30px rgba(200,150,255,0.06);
+    border:1px solid rgba(255,255,255,0.06);
+    transition: transform .35s ease, box-shadow .35s ease;
+  }
+  .hero-photos img:hover{ transform: translateY(-6px) scale(1.02); }
+
+  .heart{ font-size:56px; filter:drop-shadow(0 6px 18px rgba(0,0,0,0.6)) }
+
+  /* favorites */
+  #favorites ul{ list-style:none; padding:0; margin: 18px 0 0 0; width:100%; max-width:1000px; }
+  #favorites li{
+    background:var(--glass);
+    margin:12px 0;
+    padding:14px;
+    border-radius:12px;
+    display:flex;
+    gap:14px;
+    align-items:center;
+    flex-wrap:wrap;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+  .fav-left{ flex:1; min-width:220px }
+  .fav-left b{ display:block; font-size:18px; margin-bottom:6px; color:var(--accent) }
+  .fav-right{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; align-items:center; min-width:160px }
+  .fav-right img{ width:88px; height:88px; object-fit:cover; border-radius:10px; box-shadow:0 6px 22px rgba(0,0,0,0.6) }
+
+  /* compliments */
+  #compliments { background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); }
+  .compl-grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap:12px; width:100%; max-width:1100px; margin-top:18px }
+  .cmp{ background: rgba(255,255,255,0.03); padding:12px; border-radius:10px; text-align:center; font-weight:600; color:#fff; border:1px solid rgba(255,255,255,0.03) }
+
+  /* final */
+  #final h2{ font-size:clamp(40px,9vw,104px); margin:0; color:var(--accent-2); text-align:center; letter-spacing:1px; text-shadow:0 12px 60px rgba(160,120,255,0.06) }
+  #final p{ margin-top:18px; font-size:20px; color:#fff; opacity:0.95; text-align:center; max-width:900px }
+
+  /* audio controls (fixed) */
+  .audio-controls{
+    position:fixed; right:18px; bottom:18px; z-index:9;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:12px; padding:10px; display:flex; gap:8px; align-items:center; backdrop-filter: blur(6px);
+    border:1px solid rgba(255,255,255,0.05);
+  }
+  .btn { cursor:pointer; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.03); color:#fff; border:1px solid rgba(255,255,255,0.04); }
+  .btn:hover{ transform: translateY(-2px) }
+
+  @media (max-width:640px){
+    .fav-right img{ width:72px; height:72px }
+    .hero-photos img{ width:120px }
+  }
+</style>
+</head>
+<body>
+  <div class="stars" aria-hidden="true"></div>
+
+  <div class="wrap">
+
+    <!-- AUDIO CONTROLS -->
+    <div class="audio-controls" id="audioControls" aria-hidden="false">
+      <button class="btn" id="playBtn">▶️ Включить музыку</button>
+      <button class="btn" id="pauseBtn" style="display:none">⏸️ Пауза</button>
+      <label style="font-size:13px; opacity:0.9; margin-left:6px">Группа Пицца — Оружие</label>
+    </div>
+
+    <!-- HERO -->
+    <section class="block" id="gift">
+      <h1>⭐ Звезда по имени Азкен Камила ⭐</h1>
+
+      <!-- Декоративное изображение (локальный путь; система преобразует путь в URL при деплое) -->
+      <img src="/mnt/data/A_webpage_dedicated_to_Azken_Kamila_presents_two_m.png" alt="Декоративное изображение" style="width:46%; max-width:420px; border-radius:18px; box-shadow:0 16px 50px rgba(0,0,0,0.7)"/>
+
+      <div class="hero-photos" role="list">
+        <!-- ЗАМЕНИ: вставь прямые ссылки на свои 3 фото (raw GitHub или любой URL) -->
+        <img src="ВСТАВЬ_ССЫЛКУ_НА_ФОТО1" alt="Азкен Камила photo 1" />
+        <img src="ВСТАВЬ_ССЫЛКУ_НА_ФОТО2" alt="Азкен Камила photo 2" />
+        <img src="ВСТАВЬ_ССЫЛКУ_НА_ФОТО3" alt="Азкен Камила photo 3" />
+      </div>
+
+      <p class="subtitle">
+        В бесконечной вселенной есть миллионы звёзд. Но одна из них светит ярче всех — <b>Азкен Камила</b>.<br>
+        Она — свет, который делает мою жизнь ярче. Она — тепло, которое делает мои дни лучше. Она — моя вселенная.
+      </p>
+
+      <p class="subtitle"><b>Этот сайт — мой подарок на Новый год.</b> Чтобы весь мир знал: <b>есть звезда, по имени Азкен Камила.</b></p>
+
+      <div class="heart">❤️</div>
+      <p style="font-weight:700; font-size:18px">Твой любимый Саян ❤️</p>
+    </section>
+
+    <!-- FAVORITES -->
+    <section class="block" id="favorites" aria-label="Любимое Камилы">
+      <h2>То, что ты любишь больше всего</h2>
+
+      <ul>
+        <li>
+          <div class="fav-left"><b>Любимое время года:</b> Зима / Осень</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2016/11/29/02/01/winter-1867260_1280.jpg" alt="Зима">
+            <img src="https://cdn.pixabay.com/photo/2015/10/30/12/52/autumn-1018752_1280.jpg" alt="Осень">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимые цвета:</b> Березовый, Фиолетовый</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2016/11/22/07/09/birch-1846366_1280.jpg" alt="Берёза">
+            <img src="https://cdn.pixabay.com/photo/2016/03/05/19/02/iris-1238258_1280.jpg" alt="Фиолетовый">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимые цветы:</b> Розы, Пионы</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2015/04/19/08/33/rose-729512_1280.jpg" alt="Роза">
+            <img src="https://cdn.pixabay.com/photo/2017/06/09/17/17/peony-2383126_1280.jpg" alt="Пион">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимый напиток:</b> Кола и Макси Чай</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2016/11/29/09/37/soda-1869680_1280.jpg" alt="Кола">
+            <img src="https://cdn.pixabay.com/photo/2016/08/21/14/09/ice-tea-1604043_1280.jpg" alt="Чай со льдом">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимая цифра:</b> 2</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2018/10/10/11/30/two-3735531_1280.jpg" alt="2">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимый фастфуд:</b> Нагетсы и Фри</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2015/03/26/09/54/chicken-690651_1280.jpg" alt="Нагетсы">
+            <img src="https://cdn.pixabay.com/photo/2016/03/05/19/02/fries-1239043_1280.jpg" alt="Фри">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимая сладость:</b> Мороженое, Альпенгольд, Орео</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2016/04/14/22/05/ice-ice-cream-1326851_1280.jpg" alt="Мороженое">
+            <img src="https://cdn.pixabay.com/photo/2017/06/30/07/12/candy-2457868_1280.jpg" alt="Конфеты">
+            <img src="https://cdn.pixabay.com/photo/2017/03/27/14/56/cookies-2178806_1280.jpg" alt="Орео">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимая острая еда:</b> Латяо и Черный Бульдак</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2015/04/08/13/13/chili-712665_1280.jpg" alt="Острый перец">
+            <img src="https://cdn.pixabay.com/photo/2017/08/07/13/58/noodles-2606403_1280.jpg" alt="Лапша (пример)">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимая соленая еда:</b> Сушеный кальмар и сушеная рыба</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2016/11/18/22/00/squid-1835580_1280.jpg" alt="Кальмар">
+            <img src="https://cdn.pixabay.com/photo/2017/06/08/07/56/fish-2397812_1280.jpg" alt="Рыба">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимый вкус чипсов:</b> Сырный; Сметана и Лук</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2017/06/10/07/20/chips-2390478_1280.jpg" alt="Чипсы">
+            <img src="https://cdn.pixabay.com/photo/2015/04/10/00/41/food-715542_1280.jpg" alt="Сметана и лук">
+          </div>
+        </li>
+
+        <li>
+          <div class="fav-left"><b>Любимый вкус Aitea:</b> Клубника + Киви</div>
+          <div class="fav-right">
+            <img src="https://cdn.pixabay.com/photo/2016/03/05/19/02/strawberries-1238223_1280.jpg" alt="Клубника">
+            <img src="https://cdn.pixabay.com/photo/2014/12/21/23/28/kiwi-576895_1280.jpg" alt="Киви">
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- COMPLIMENTS -->
+    <section class="block" id="compliments">
+      <h2>100 причин, почему ты особенная</h2>
+      <div class="compl-grid" role="list">
+        <!-- Комплименты (1..100) -->
+        <div class="cmp">1. Ты самая добрая</div>
+        <div class="cmp">2. Ты самая нежная</div>
+        <div class="cmp">3. Ты самая красивая</div>
+        <div class="cmp">4. Ты даришь тепло</div>
+        <div class="cmp">5. У тебя прекрасная улыбка</div>
+        <div class="cmp">6. Ты умна</div>
+        <div class="cmp">7. Ты понимаешь меня</div>
+        <div class="cmp">8. Ты вдохновляешь</div>
+        <div class="cmp">9. Ты смелая</div>
+        <div class="cmp">10. Ты терпеливая</div>
+        <div class="cmp">11. Ты заботливая</div>
+        <div class="cmp">12. Ты честная</div>
+        <div class="cmp">13. Ты красива изнутри</div>
+        <div class="cmp">14. Ты лучшая слушательница</div>
+        <div class="cmp">15. Ты даришь радость</div>
+        <div class="cmp">16. Ты артистична</div>
+        <div class="cmp">17. Ты креативна</div>
+        <div class="cmp">18. Ты честна со мной</div>
+        <div class="cmp">19. Ты помогаешь другим</div>
+        <div class="cmp">20. Ты верная</div>
+        <div class="cmp">21. Ты красива в любых фильтрах</div>
+        <div class="cmp">22. Ты умеешь прощать</div>
+        <div class="cmp">23. Ты поддерживаешь меня</div>
+        <div class="cmp">24. Ты умеешь смеяться</div>
+        <div class="cmp">25. Ты любопытна</div>
+        <div class="cmp">26. Ты внимательная</div>
+        <div class="cmp">27. Ты сильная</div>
+        <div class="cmp">28. Ты очаровательна</div>
+        <div class="cmp">29. Ты настоящая</div>
+        <div class="cmp">30. Ты деликатная</div>
+        <div class="cmp">31. Ты всегда красива утром</div>
+        <div class="cmp">32. Ты умеешь удивлять</div>
+        <div class="cmp">33. Ты нежно говоришь</div>
+        <div class="cmp">34. Ты вдохновляешь на лучшее</div>
+        <div class="cmp">35. Ты терпима</div>
+        <div class="cmp">36. Ты стильная</div>
+        <div class="cmp">37. Ты справедлива</div>
+        <div class="cmp">38. Ты щедра</div>
+        <div class="cmp">39. Ты моя опора</div>
+        <div class="cmp">40. Ты яркая</div>
+        <div class="cmp">41. Ты умеешь мечтать</div>
+        <div class="cmp">42. Ты заботишься о близких</div>
+        <div class="cmp">43. Ты отзывчивая</div>
+        <div class="cmp">44. Ты мудра</div>
+        <div class="cmp">45. Ты делаешь мир лучше</div>
+        <div class="cmp">46. Ты позитивна</div>
+        <div class="cmp">47. Ты очаровательно смотришь</div>
+        <div class="cmp">48. Ты доброжелательна</div>
+        <div class="cmp">49. Ты умеешь слушать сердце</div>
+        <div class="cmp">50. Ты моя радость</div>
+        <div class="cmp">51. Ты озаряешь день</div>
+        <div class="cmp">52. Ты мила</div>
+        <div class="cmp">53. Ты искренняя</div>
+        <div class="cmp">54. Ты талантлива</div>
+        <div class="cmp">55. Ты надежна</div>
+        <div class="cmp">56. Ты излучаешь спокойствие</div>
+        <div class="cmp">57. Ты смелее, чем думаешь</div>
+        <div class="cmp">58. Ты вдохновляешь меня учиться</div>
+        <div class="cmp">59. Ты душевна</div>
+        <div class="cmp">60. Ты даёшь уют</div>
+        <div class="cmp">61. Ты умеешь удивляться</div>
+        <div class="cmp">62. Ты элегантна</div>
+        <div class="cmp">63. Ты замечаешь детали</div>
+        <div class="cmp">64. Ты неповторима</div>
+        <div class="cmp">65. Ты — мой лучший друг</div>
+        <div class="cmp">66. Ты – источник вдохновения</div>
+        <div class="cmp">67. Ты даришь поддержку</div>
+        <div class="cmp">68. Ты ценишь простые вещи</div>
+        <div class="cmp">69. Ты прекрасна даже в мыслях</div>
+        <div class="cmp">70. Ты заботишься о себе</div>
+        <div class="cmp">71. Ты искренняя в чувствах</div>
+        <div class="cmp">72. Ты умеешь радоваться</div>
+        <div class="cmp">73. Ты — свет в темноте</div>
+        <div class="cmp">74. Ты излучаешь доброту</div>
+        <div class="cmp">75. Ты — моё вдохновение</div>
+        <div class="cmp">76. Ты смотришь на мир красиво</div>
+        <div class="cmp">77. Ты прекрасно готовишь (или умеешь выбрать вкусное)</div>
+        <div class="cmp">78. Ты искренне любишь</div>
+        <div class="cmp">79. Ты умеешь удивлять мелочами</div>
+        <div class="cmp">80. Ты свободна в мыслях</div>
+        <div class="cmp">81. Ты умеешь мечтать вместе со мной</div>
+        <div class="cmp">82. Ты — моя гордость</div>
+        <div class="cmp">83. Ты всегда рядом мыслями</div>
+        <div class="cmp">84. Ты прекрасно выглядишь в любом свете</div>
+        <div class="cmp">85. Ты умеешь поддержать шуткой</div>
+        <div class="cmp">86. Ты делаешь всё с любовью</div>
+        <div class="cmp">87. Ты — самое дорогое</div>
+        <div class="cmp">88. Ты всегда меня выслушаешь</div>
+        <div class="cmp">89. Ты умеешь радоваться мелочам</div>
+        <div class="cmp">90. Ты делаешь меня лучше</div>
+        <div class="cmp">91. Ты — моя тихая гавань</div>
+        <div class="cmp">92. Ты — мой уютный дом</div>
+        <div class="cmp">93. Ты умеешь простить</div>
+        <div class="cmp">94. Ты — моя музыка</div>
+        <div class="cmp">95. Ты прекрасна в движении</div>
+        <div class="cmp">96. Ты делаешь каждый день особенным</div>
+        <div class="cmp">97. Ты — моя любовь и друг</div>
+        <div class="cmp">98. Ты даришь смысл</div>
+        <div class="cmp">99. Спасибо тебе большое за то, что ты есть</div>
+        <div class="cmp">100. Я счастлив, что ты рядом</div>
+      </div>
+    </section>
+
+    <!-- FINAL -->
+    <section class="block" id="final" aria-label="Финал">
+      <h2>Я ТЕБЯ ЛЮБЛЮ ❤️</h2>
+      <p>Спасибо тебе за каждый день, за улыбку и за то, что ты — именно ты.</p>
+    </section>
+
+  </div>
+
+  <!-- SCRIPT: YouTube embed via small iframe OR MP3 option -->
+  <script>
+    // YouTube video chosen: Группа Пицца - Оружие
+    const YOUTUBE_ID = "AiG0Y57P_JE"; // вставлено
+    const MP3_SRC = ""; // если хочешь использовать mp3 вместо YouTube — вставь прямой URL сюда
+
+    // audio element for MP3
+    const audio = new Audio();
+    audio.loop = true;
+    audio.volume = 0.55;
+    if (MP3_SRC) { audio.src = MP3_SRC; audio.preload = 'auto'; }
+
+    const playBtn = document.getElementById('playBtn');
+    const pauseBtn = document.getElementById('pauseBtn');
+
+    playBtn.addEventListener('click', async () => {
+      // если MP3 указан — проигрываем его
+      if (MP3_SRC) {
+        try { await audio.play(); playBtn.style.display='none'; pauseBtn.style.display='inline-block'; }
+        catch(e){ console.warn('Autoplay blocked', e); }
+        return;
+      }
+
+      // иначе создаём маленький iframe YouTube (встроенный плеер, autoplay)
+      if (YOUTUBE_ID) {
+        // если iframe уже есть — ничего не делать
+        if (!document.getElementById('ytplayer')) {
+          const iframe = document.createElement('iframe');
+          iframe.id = 'ytplayer';
+          iframe.style.position='fixed';
+          iframe.style.right='18px';
+          iframe.style.bottom='80px';
+          iframe.style.width='360px';
+          iframe.style.height='202px';
+          iframe.style.border='none';
+          iframe.style.zIndex = 12;
+          iframe.src = `https://www.youtube.com/embed/${YOUTUBE_ID}?autoplay=1&controls=1&rel=0&loop=1&playlist=${YOUTUBE_ID}`;
+          document.body.appendChild(iframe);
+        }
+        playBtn.style.display='none';
+        pauseBtn.style.display='inline-block';
+      }
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      // pause mp3 or remove iframe
+      if (MP3_SRC) {
+        audio.pause();
+      } else {
+        const iframe = document.getElementById('ytplayer');
+        if (iframe) iframe.remove();
+      }
+      pauseBtn.style.display='none';
+      playBtn.style.display='inline-block';
+    });
+
+    // UX: клик по второму subtitle — плавно прокрутит к списку
+    document.querySelectorAll('.subtitle').forEach(el=>{
+      el.style.cursor='pointer';
+      el.addEventListener('click', ()=>{ document.getElementById('favorites').scrollIntoView({behavior:'smooth'}) });
+    });
+  </script>
+</body>
+</html>
